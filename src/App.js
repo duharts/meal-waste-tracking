@@ -1,16 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from './components/ui/card';
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Plus, Delete } from 'lucide-react';
-import AWS from 'aws-sdk';
-
-// Initialize DynamoDB
-AWS.config.update({
-  region: "YOUR_AWS_REGION",
-  accessKeyId: "YOUR_ACCESS_KEY_ID",
-  secretAccessKey: "YOUR_SECRET_ACCESS_KEY"
-});
-
-const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 const NumberPad = ({ value, onChange }) => {
   const handleClick = (num) => {
@@ -87,53 +77,6 @@ const MealDiscardTracker = () => {
     quantity: ''
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Fetch records from DynamoDB
-  useEffect(() => {
-    const fetchRecords = async () => {
-      try {
-        setIsLoading(true);
-        const params = {
-          TableName: "meal-discards"
-        };
-
-        const result = await dynamodb.scan(params).promise();
-        if (result.Items) {
-          setDiscardRecords(result.Items);
-        }
-      } catch (err) {
-        setError("Failed to fetch records");
-        console.error("Error fetching records:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchRecords();
-  }, []);
-
-  // Save record to DynamoDB
-  const saveRecord = async (record) => {
-    const params = {
-      TableName: "meal-discards",
-      Item: {
-        id: record.id.toString(),
-        date: record.date,
-        mealType: record.mealType,
-        quantity: record.quantity,
-        timestamp: new Date().toISOString()
-      }
-    };
-
-    try {
-      await dynamodb.put(params).promise();
-    } catch (err) {
-      setError("Failed to save record");
-      console.error("Error saving record:", err);
-      throw err;
-    }
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -167,46 +110,28 @@ const MealDiscardTracker = () => {
       quantity: parseInt(newRecord.quantity)
     };
 
-    try {
-      setIsLoading(true);
-      await saveRecord(record);
+    setIsLoading(true);
+    // Simulate network delay
+    setTimeout(() => {
       setDiscardRecords(prev => [...prev, record]);
-      
       setNewRecord({
         date: today,
         mealType: 'Breakfast',
         quantity: ''
       });
-    } catch (err) {
-      // Error already handled in saveRecord
-    } finally {
       setIsLoading(false);
-    }
+    }, 500);
   };
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      {/* Logo and Title */}
       <div className="text-center mb-8">
-        <div className="mb-4">
-          <img 
-            src="/api/placeholder/200/100" 
-            alt="Children's Rescue Fund Logo" 
-            className="mx-auto h-24 object-contain"
-          />
-        </div>
         <h1 className="text-2xl font-bold text-blue-600">Meal Discard Tracker</h1>
         <h2 className="text-xl text-gray-600">Kenilworth</h2>
       </div>
 
       <Card className="w-full shadow-lg">
         <CardContent className="p-6">
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-              {error}
-            </div>
-          )}
-          
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
@@ -247,7 +172,7 @@ const MealDiscardTracker = () => {
               <NumberPad value={newRecord.quantity} onChange={handleQuantityChange} />
             </div>
             
-            <div className="flex justify-end mt-6">
+            <div className="flex justify-center mt-6">
               <button
                 type="submit"
                 disabled={isLoading}
@@ -256,35 +181,23 @@ const MealDiscardTracker = () => {
                 }`}
               >
                 <Plus size={20} />
-                {isLoading ? 'Saving...' : 'Add Record'}
+                {isLoading ? 'Saving...' : 'Submit'}
               </button>
             </div>
           </form>
 
-          {/* Records Table */}
           <div className="mt-8 overflow-x-auto">
-            {isLoading && !discardRecords.length ? (
-              <div className="text-center py-4 text-gray-500">Loading records...</div>
-            ) : (
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Date</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Meal Type</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Quantity</th>
+            <table className="w-full">
+              <tbody className="divide-y divide-gray-200">
+                {discardRecords.map(record => (
+                  <tr key={record.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-sm text-gray-900">{record.date}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{record.mealType}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{record.quantity}</td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {discardRecords.map(record => (
-                    <tr key={record.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm text-gray-900">{record.date}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{record.mealType}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{record.quantity}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                ))}
+              </tbody>
+            </table>
           </div>
         </CardContent>
       </Card>
