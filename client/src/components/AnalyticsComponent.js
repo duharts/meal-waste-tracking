@@ -32,9 +32,9 @@ export default function AnalyticsComponent({ records, categories }) {
                 </div>
 
                 {viewType === 'Records' ? (
-                    <Table records={records} category={categories} />
+                    <Table records={records} mealtype={categories} />
                 ) : (
-                    <Graphs records={records} category={categories} />
+                    <Graphs records={records} mealtype={categories} />
                 )}
 
 

@@ -14,14 +14,14 @@ import {
     ResponsiveContainer,
 } from 'recharts';
 
-const Graphs = ({ records, category }) => {
+const Graphs = ({ records, mealType }) => {
     const [graphType, setGraphType] = useState('Bar');
 
-    // Getting all the categories and amount data for graphs
-    const categoryData = Object.values(
+    // Getting all the categories and quantity data for graphs
+    const mealTypeData = Object.values(
         records.reduce((acc, record) => {
-            acc[record.category] = acc[record.category] || { category: record.category, total: 0 };
-            acc[record.category].total += record.amount;
+            acc[record.mealType] = acc[record.mealType] || { mealType: record.mealType, total: 0 };
+            acc[record.mealType].total += record.quantity;
             return acc;
         }, {})
     );
@@ -31,7 +31,7 @@ const Graphs = ({ records, category }) => {
         .filter((record) => new Date(record.date).getMonth() === currentMonth)
         .map((record) => ({
             date: record.date,
-            amount: record.amount,
+            quantity: record.quantity,
         }));
 
     console.log(currentMonthData)
@@ -55,14 +55,14 @@ const Graphs = ({ records, category }) => {
             {graphType === 'Bar' && (
                 <div className="overflow-x-auto">
                     <p className="text-sm text-center text-gray-500 mb-4">
-                        This chart shows the total expenses for each category in a bar format.
+                        This chart shows the total quantity discarded for each meal type in a bar format.
                     </p>
                     <ResponsiveContainer
-                        width={categoryData.length > 5 ? categoryData.length * 150 : '100%'}
+                        width={mealTypeData.length > 5 ? mealTypeData.length * 150 : '100%'}
                         height={400}
                     >
-                        <BarChart data={categoryData}>
-                            <XAxis dataKey="category" tick={{ fontSize: 12 }} />
+                        <BarChart data={mealTypeData}>
+                            <XAxis dataKey="mealType" tick={{ fontSize: 12 }} />
                             <YAxis tick={{ fontSize: 12 }} />
                             <Tooltip />
                             <Legend />
@@ -75,21 +75,21 @@ const Graphs = ({ records, category }) => {
             {graphType === 'Pie' && (
                 <div className="overflow-hidden">
                     <p className="text-sm text-center text-gray-500 mb-4">
-                        This pie chart represents the proportion of expenses for each category.
+                        This pie chart represents the discarded quantity for each mealType.
                     </p>
                     <ResponsiveContainer width="100%" height={400}>
                         <PieChart>
                             <Pie
-                                data={categoryData}
+                                data={mealTypeData}
                                 dataKey="total"
-                                nameKey="category"
+                                nameKey="mealType"
                                 cx="50%"
                                 cy="50%"
                                 outerRadius={100}
                                 fill="#8884d8"
-                                label={(entry) => entry.category}
+                                label={(entry) => entry.mealType}
                             >
-                                {categoryData.map((entry, index) => (
+                                {mealTypeData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>
@@ -102,7 +102,7 @@ const Graphs = ({ records, category }) => {
             {graphType === 'Line' && (
                 <div className="overflow-hidden">
                     <p className="text-sm text-center text-gray-500 mb-4">
-                        This line chart shows the daily expenses recorded for the current month.
+                        This line chart shows the daily quantity discarded for the current month.
                     </p>
                     <ResponsiveContainer width="100%" height={400}>
                         <LineChart data={currentMonthData}>
@@ -110,7 +110,7 @@ const Graphs = ({ records, category }) => {
                             <YAxis tick={{ fontSize: 12 }} />
                             <Tooltip />
                             <Legend />
-                            <Line type="monotone" dataKey="amount" stroke="#82ca9d" />
+                            <Line type="monotone" dataKey="quantity" stroke="#82ca9d" />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>

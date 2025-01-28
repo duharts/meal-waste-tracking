@@ -1,15 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
-const RecordTable = ({ records, category }) => {
+const RecordTable = ({ records, mealtype }) => {
     const [filters, setFilters] = useState({
-        category: '',
+        mealType: '',
         startDate: '',
         endDate: '',
     });
-    const [categories, setCategories] = useState(category);
+    const [categories, setCategories] = useState(mealtype);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
+
+    const handleDownloadCSV = () => {
+        if (!records || records.length === 0) {
+            alert('No data available to download.');
+            return;
+        }
+
+        // Convert JSON to CSV format manually
+        const headers = Object.keys(records[0]).join(',') + '\n'; // CSV Headers
+        const rows = records.map(row => Object.values(row).join(',')).join('\n'); // CSV Rows
+        const csvContent = headers + rows;
+
+        // Create a Blob and trigger download
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'table-data.csv'); // File name
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    };
 
     // Handling filter changes
     const handleFilterChange = (e) => {
@@ -19,19 +45,20 @@ const RecordTable = ({ records, category }) => {
 
     // Resetting the filters
     const handleResetFilters = () => {
-        setFilters((prev) => ({ ...prev, category: '', startDate: '', endDate: '' }));
+        setFilters((prev) => ({ ...prev, mealType: '', startDate: '', endDate: '' }));
     };
 
     // Filtering data here
     const filteredData = records.filter((item) => {
-        const isCategoryMatch = filters.category
-            ? item.category.toLowerCase().includes(filters.category.toLowerCase())
+        console.log("filter 1 -", filters)
+        const ismealTypeMatch = filters.mealType
+            ? item.mealType.toLowerCase().includes(filters.mealType.toLowerCase())
             : true;
         const isDateMatch =
             (!filters.startDate || new Date(item.date) >= new Date(filters.startDate)) &&
             (!filters.endDate || new Date(item.date) <= new Date(filters.endDate));
 
-        return isCategoryMatch && isDateMatch;
+        return ismealTypeMatch && isDateMatch;
     });
 
     // Logic for pagination
@@ -59,15 +86,15 @@ const RecordTable = ({ records, category }) => {
                 <div className="flex flex-col">
                     <label className="text-sm text-gray-600 mb-1">Meal Type</label>
                     <select
-                        name="category"
-                        value={filters.category}
+                        name="mealType"
+                        value={filters.mealType}
                         onChange={handleFilterChange}
                         className="border p-2 rounded-lg w-full sm:w-48"
                     >
                         <option value="">All Meals</option>
-                        {categories && categories.map((category, index) => (
-                            <option key={index} value={category}>
-                                {category}
+                        {categories && categories.map((mealType, index) => (
+                            <option key={index} value={mealType}>
+                                {mealType}
                             </option>
                         ))}
                     </select>
@@ -101,7 +128,12 @@ const RecordTable = ({ records, category }) => {
                         Reset
                     </button>
                 </div>
-
+                <button
+                    onClick={handleDownloadCSV}
+                    className={`w-40 lg:w-40 p-2 text-sm lg:text-md font-small rounded-lg transition-colors bg-gray-200 hover:bg-button hover:text-white text-black  shadow-md`}
+                >
+                    Download CSV
+                </button>
             </div>
 
             {/* table div */}
@@ -112,6 +144,7 @@ const RecordTable = ({ records, category }) => {
                             <th className="border border-gray-300 px-4 py-2 text-left">Meal Type</th>
                             <th className="border border-gray-300 px-4 py-2 text-left">Quantity</th>
                             <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
+
                         </tr>
                     </thead>
                     <tbody>

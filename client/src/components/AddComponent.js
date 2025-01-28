@@ -59,7 +59,7 @@ const MealTypeButton = ({ type, selected, onClick }) => (
     <button
         type="button"
         onClick={() => onClick(type)}
-        className={`w-full p-4 text-lg font-medium rounded-lg transition-colors ${selected
+        className={`w-full p-4 text-md lg:text-lg font-medium rounded-lg transition-colors ${selected
             ? 'bg-button text-white shadow-md'
             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
@@ -141,7 +141,7 @@ export default function AddComponent() {
             <CardContent className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                        <label className="block text-md font-medium text-gray-700 mb-2">Date</label>
                         <input
                             type="date"
                             name="date"
@@ -153,7 +153,7 @@ export default function AddComponent() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Meal Type</label>
+                        <label className="block text-md font-medium text-gray-700 mb-2">Meal Type</label>
                         <div className="grid grid-cols-3 gap-3">
                             {['Breakfast', 'Lunch', 'Dinner'].map((mealType) => (
                                 <MealTypeButton
@@ -167,7 +167,7 @@ export default function AddComponent() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                        <label className="block text-md font-medium text-gray-700 mb-2">Quantity</label>
                         <input
                             type="text"
                             name="quantity"

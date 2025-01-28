@@ -28,7 +28,6 @@ const MealDiscardTracker = () => {
 			try {
 				// Replace with your API endpoint
 				const response = await axios.get('http://localhost:5000/api/records');
-				console.log(response.data)
 				setRecords(response.data); // Assuming API returns an array of records
 				setLoading(false);
 			} catch (err) {

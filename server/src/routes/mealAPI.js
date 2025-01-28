@@ -28,11 +28,14 @@ module.exports = (db) => {
     router.get('/records', async (req, res) => {
         const params = {
             TableName: 'mealwastetracker', // Replace with your DynamoDB table name
+            ScanIndexForward: false,
         };
 
         try {
             const data = await dynamoDB.scan(params).promise(); // Fetch all records
-            res.status(200).json(data.Items); // Send the records as a JSON response
+
+
+            res.status(200).json(data.Items);
         } catch (err) {
             console.error('Error fetching records from DynamoDB:', err);
             res.status(500).json({ error: 'Failed to fetch records' });
