@@ -27,7 +27,7 @@ const MealDiscardTracker = () => {
 		const fetchData = async () => {
 			try {
 				// Replace with your API endpoint
-				const response = await axios.get('http://localhost:5000/api/records');
+				const response = await axios.get('https://wastetrackerapi.vercel.app/api/records');
 				setRecords(response.data); // Assuming API returns an array of records
 				setLoading(false);
 			} catch (err) {

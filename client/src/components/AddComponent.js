@@ -120,7 +120,7 @@ export default function AddComponent() {
         setIsLoading(true);
 
         // Simulate network delay
-        const response = await axios.post(`http://localhost:5000/api/submit-order`, {
+        const response = await axios.post(`https://wastetrackerapi.vercel.app/api/submit-order`, {
             data: record
         }).then((res) => {
             console.log('Order submitted -> ', res)
