@@ -59,7 +59,7 @@ const MealTypeButton = ({ type, selected, onClick }) => (
     <button
         type="button"
         onClick={() => onClick(type)}
-        className={`w-full p-4 text-md lg:text-lg font-medium rounded-lg transition-colors ${selected
+        className={`w-full p-4 text-sm lg:text-lg font-medium rounded-lg transition-colors ${selected
             ? 'bg-button text-white shadow-md'
             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
