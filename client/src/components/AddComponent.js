@@ -147,6 +147,7 @@ export default function AddComponent() {
                             name="date"
                             value={newRecord.date}
                             onChange={handleInputChange}
+                            max={new Date().toISOString().split("T")[0]}
                             className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             required
                         />
