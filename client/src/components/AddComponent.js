@@ -121,6 +121,10 @@ export default function AddComponent() {
 
         // Simulate network delay
         const response = await axios.post(`https://t8vbvy0h16.execute-api.us-east-1.amazonaws.com/prod/submit-order`, {
+            headers: {
+                'Content-Type': 'application/json',
+                // Remove any custom headers unless absolutely necessary
+            },
             data: record
         }).then((res) => {
             console.log('Order submitted -> ', res)
