@@ -47,7 +47,7 @@ exports.handler = async (event) => {
             console.log('POST Method:', httpMethod);
             console.log('POST Body:', body);
 
-            const { id, mealType, quantity, date } = body;
+            const { id, mealType, quantity, date } = body.data;
 
             if (!mealType || !quantity || !date) {
                 res.status(400).json({ error: 'All fields are required!' });
