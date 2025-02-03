@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "@aws-sdk/client-dynamodb": "^3.682.0",
     "@aws-sdk/lib-dynamodb": "^3.685.0",
     "aws-sdk": "^2.1692.0",
+    "aws-serverless-express": "^3.4.0",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",

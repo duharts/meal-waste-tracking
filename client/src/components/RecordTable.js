@@ -11,6 +11,8 @@ const RecordTable = ({ records, mealtype }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
 
+    console.log(records)
+
     const handleDownloadCSV = () => {
         if (!records || records.length === 0) {
             alert('No data available to download.');
